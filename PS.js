@@ -17,9 +17,25 @@ class Transform{
      * @param {float} scaleZ the Transform's scale on the Z axis.
     */
     scaleZ;
+    /** 
+     * @param {float} X the Transform's position on the X axis.
+    */
+    X;
+    /** 
+     * @param {float} Y the Transform's position on the Y axis.
+    */
+    Y;
+    /** 
+     * @param {float} Z the Transform's position on the Z axis.
+    */
+    Z;
+    /** 
+     * @param {float} W the Transform's rotation in some form optionally.
+    */
+    W;
     /**
      * Please don't use this. The static functions "FromValues", "FromVector2" and "FromVector3" are filling the role of this for you.
-     */
+    */
     constructor(x,y,z,w){
         this.X = x;
         this.Y = y;
@@ -55,11 +71,11 @@ class Transform{
     }
     /**
     * This function changes the Transform itself and returns no values. It adds a Vec2 to the Transform's X and Y values.
-    * @param {Vec2} vector2 A Vec2 object with the properties x and y, both floats;
+    * @param {Vec2} vector2 A Vec2 object with the properties x and y, both floats.
     */
     AddVector2(vector2){
-        this.x+=vector2.x;
-        this.y+=vector2.y;
+        this.X += vector2.x;
+        this.Y += vector2.y;
     }
 }
 class Mat2{

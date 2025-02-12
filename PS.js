@@ -62,7 +62,6 @@ class Transform{
         this.y+=vector2.y;
     }
 }
-
 class Mat2{
     constructor(xx, xy, yx ,yy){
         this.xx = xx;
@@ -70,15 +69,31 @@ class Mat2{
         this.yx = yx;
         this.yy = yy;
     }
+    /**
+     * returns a new Mat2 object, that applies a rotation around the origin by the given angle
+     * @param {float} angle the angle in radians
+     * @returns {Mat2} the new Mat2
+     */
     static rotation(angle){
         return new Mat2(Math.cos(angle), - Math.sin(angle), Math.sin(angle), Math.cos(angle));
     }
+    /**
+     * returns the transpose of the Mat2
+     * @returns {Mat2} the new Mat2
+     */
     transpose(){
         return new Mat2(this.xx, this.yx, this.xy, this.yy);
     }
+    /**
+     * don't even ask
+     */
     inverse(){
         console.error("I forbor");
     }
+    /**
+     * modifies the original Mat2, turns it into it's transpose
+     * @returns {Mat2} self
+     */
     transposeInto(){
         let temp = this.xy;
         this.xy = this.yx;
@@ -91,25 +106,65 @@ class Vec2{
         this.x = x;
         this.y = y;
     }
+    /**
+     * Returns a new vec2 with the members added together
+     * @param {Vec2} v Vec2 object 
+     * @returns {Vec2} the new vec2
+     */
     add(v){return new Vec2(this.x + v.x, this.y + v.y);}
+    /**
+     * Returns a new vec2 with the members subtracted from left
+     * @param {Vec2} v Vec2 object 
+     * @returns {Vec2} the new vec2
+     */
     sub(v){return new Vec2(this.x - v.x, this.y - v.y);}
+    /**
+     * Returns a new vec2, that is scaled by the given value
+     * @param {float} c a scalar value
+     * @returns {Vec2} the new vec2
+     */
     scale(c){return new Vec2(this.x*c, this.y*c);}
+    /**
+     * Returns a new vec2 that has the transformation of M applied
+     * @param {Mat2} M Mat2 object
+     * @returns {Vec2} the new vec2
+     */
     mul(M){return new Vec2(this.x*M.xx + this.y*M.xy, this.y*M.yy + this.x*M.yx);}
+    /**
+     * modifies the original vec2 object, adds the members together
+     * @param {Vec2} v Vec2 object
+     * @returns {Vec2} self
+     */
     addInto(v){
         this.x += v.x;
         this.y += v.y;
         return this;
     }
+    /**
+     * modifies the original vec2 object, subtracts the members from left
+     * @param {Vec2} v Vec2 object
+     * @returns {Vec2} self
+     */
     subInto(v){
         this.x -= v.x;
         this.y -= v.y;
         return this;
     }
+    /**
+     * modifies the original vec2 object, scales members by the given value
+     * @param {float} c a scalar value
+     * @returns {Vec2} self
+     */
     scaleInto(c){
         this.x *= c;
         this.y *= c;
         return this;
     }
+    /**
+     * modifies the original vec2 object, applies the transformation M to it
+     * @param {Mat2} M Mat2 object
+     * @returns {Vec2} self
+     */
     mulInto(M){
         this.x = this.x*M.xx + this.y*M.xy;
         this.y = this.y*M.yy + this.x*M.yx;

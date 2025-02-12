@@ -47,7 +47,6 @@ class Transform{
         return new Transform(vector3.x,vector3.y,vector3.z,0);
     }
 }
-
 class Mat2{
     constructor(xx, xy, yx ,yy){
         this.xx = xx;
@@ -55,6 +54,11 @@ class Mat2{
         this.yx = yx;
         this.yy = yy;
     }
+    /**
+     * returns a new Mat2 object, that applies a rotation around the origin by the given angle
+     * @param {float} angle the angle in radians
+     * @returns {Mat2} the new Mat2
+     */
     static rotation(angle){
         return new Mat2(Math.cos(angle), - Math.sin(angle), Math.sin(angle), Math.cos(angle));
     }

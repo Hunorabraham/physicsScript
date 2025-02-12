@@ -1,2 +1,10 @@
-Mit kíván a magyar nemzet!
-- hatalmasnagy...
+Overall goals
+> classes for
+    > ridig bodies
+    > colliders
+    > vectors
+    > physics transform
+        > scale, position
+    > joints <maybe>
+> functions
+    > in general fuck you

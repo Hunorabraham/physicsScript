@@ -5,11 +5,19 @@ class Physics{
 }
 
 class Transform{
+    /** 
+     * @param {float} scaleX the Transform's scale on the X axis.
+     * @param {float} scaleY the Transform's scale on the Y axis.
+     * @param {float} scaleZ the Transform's scale on the Z axis.
+    */
+    scaleX;
+    scaleY;
+    scaleZ;
     constructor(x,y,z,w){
-        this.X=x;
-        this.Y=y;
-        this.Z=z;
-        this.W=w;
+        this.X = x;
+        this.Y = y;
+        this.Z = z;
+        this.W = w;
     }
     /**
     * Creates a brand new Transform class object
@@ -27,7 +35,7 @@ class Transform{
     * @param {Vec2} vector2 A Vec2 object with the properties x and y, both floats;
     * @returns {Transform} new Transform
     */
-    static FromVector2(vector2) {
+    static FromVector2(vector2){
         return new Transform(vector2.x,vector2.y,0,0);
     }
     /**

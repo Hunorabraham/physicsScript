@@ -7,12 +7,19 @@ class Physics{
 class Transform{
     /** 
      * @param {float} scaleX the Transform's scale on the X axis.
-     * @param {float} scaleY the Transform's scale on the Y axis.
-     * @param {float} scaleZ the Transform's scale on the Z axis.
     */
     scaleX;
+    /** 
+     * @param {float} scaleY the Transform's scale on the Y axis.
+    */
     scaleY;
+    /** 
+     * @param {float} scaleZ the Transform's scale on the Z axis.
+    */
     scaleZ;
+    /**
+     * Please don't use this. The static functions "FromValues", "FromVector2" and "FromVector3" are filling the role of this for you.
+     */
     constructor(x,y,z,w){
         this.X = x;
         this.Y = y;
@@ -45,6 +52,14 @@ class Transform{
     */
     static FromVector3(vector3){
         return new Transform(vector3.x,vector3.y,vector3.z,0);
+    }
+    /**
+    * This function changes the Transform itself and returns no values. It adds a Vec2 to the Transform's X and Y values.
+    * @param {Vec2} vector2 A Vec2 object with the properties x and y, both floats;
+    */
+    AddVector2(vector2){
+        this.x+=vector2.x;
+        this.y+=vector2.y;
     }
 }
 

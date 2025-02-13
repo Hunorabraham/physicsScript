@@ -109,6 +109,17 @@ class Transform{
         this.scaleY *= scale;
         this.scaleZ *= scale;
     }
+    /**
+     * This function does not change the Transform itself and returns a new Transform. 
+     * Intended to use with AddTransform() function to subtract values.
+     * Example: T1.AddTransform(Transform.Negate(T2));
+     * @param {Transform} transform A Transform object.
+     * @returns {Transform} a new Transform object that has the X, Y, Z and W values negated.
+     */
+    static Negate(transform){
+        return new Transform(-transform.X, -transform.Y, -transform.Z, -transform.W);
+    }
+
 }
 class Mat2{
     constructor(xx, xy, yx ,yy){

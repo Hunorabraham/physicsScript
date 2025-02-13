@@ -2,6 +2,32 @@ class Physics{
     static hello(){
         console.log("This is PS.js ver 0.0.1");
     }
+    /**
+     * checks if two collider2d collide, conditionally resolves the collision
+     * @param {Collider2d} Cleft 
+     * @param {Collider2d} Cright 
+     * @param {boolean} shouldResolve if this is true it resolves the collision, otherwise it just returns
+     * @returns {boolean} true if there is a collision, false otherwise
+     */
+    static checkCollision(Cleft, Cright, shouldResolve){
+        collision = false;
+        outer: for(let i = 0; i < Cleft.triangles.length; i++){
+            for(let j = 0; j < Cright.triangles; j++){
+                if(Physics.isOverlapping(Cleft.triangles[i], Cright.triangles[j])){
+                    collision = true;
+                    break outer;
+                }
+            }
+        }
+        if(!collision) return false; //return early when no collision
+        //collided!
+        if(!shouldResolve) return true; //abort resolution
+        //resolve
+        return true;
+    }
+    static isOverlapping(Tleft, Tright){
+        return Tright.points.any(point=>Tleft.isOver(point)) || Tleft.points.any(point=>Tright.isOver(point));
+    }
 }
 
 class Transform{
@@ -219,18 +245,36 @@ class Vec2{
         return this;
     }
 }
-class triangle{
+class Triangle{
+    /**
+     * creates a new triange
+     * @param {Vec2[]} points the three points of the triangle
+     */
     constructor(points){
         this.points = points;
     }
+    /**
+     * returns true if the triangle is over the given point, otherwise false
+     * @param {Vec2} point to be tested against the triangle
+     * @returns {boolean}
+     */
     isOver(point){
         console.error("not implemented");
     }
 }
-class collider2d{
+class Collider2d{
+    /**
+     * Creates a new collideer
+     * @param {Triangle[]} triangles the triangles defining the shape of the collider
+     */
     constructor(triangles){
         this.triangles = triangles;
     }
+    /**
+     * renderes the oulines of all triangles to the given context, with the given colour
+     * @param {CanvasRenderingContext2D} context the rendering context to use
+     * @param {String | CanvasGradient | CanvasPattern} colour the colour the outline should be
+     */
     debugRender(context, colour){
         context.strokeStyle = colour;
         context.beginPath();

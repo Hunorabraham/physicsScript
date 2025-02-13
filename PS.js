@@ -187,4 +187,26 @@ class Vec2{
         return this;
     }
 }
-
+class triangle{
+    constructor(points){
+        this.points = points;
+    }
+    isOver(point){
+        console.error("not implemented");
+    }
+}
+class collider2d{
+    constructor(triangles){
+        this.triangles = triangles;
+    }
+    debugRender(context, colour){
+        context.strokeStyle = colour;
+        context.beginPath();
+        this.triangles.forEach(tri=>{
+            context.MoveTo(tri.points[2].x, tri.points[2].y);
+            tri.points.forEach(point=>context.LineTo(point.x, point.y));
+        });
+        context.closePath();
+        context.stroke();
+    }
+}

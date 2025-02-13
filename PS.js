@@ -70,12 +70,44 @@ class Transform{
         return new Transform(vector3.x,vector3.y,vector3.z,0);
     }
     /**
-    * This function changes the Transform itself and returns no values. It adds a Vec2 to the Transform's X and Y values.
+    * This function changes the Transform itself and returns no values.
+    * It adds a Vec2 to the Transform's X and Y values.
     * @param {Vec2} vector2 A Vec2 object with the properties x and y, both floats.
     */
     AddVector2(vector2){
         this.X += vector2.x;
         this.Y += vector2.y;
+    }
+    /**
+    * This function changes the Transform itself and returns no values.
+    * It adds a Vec3 to the Transform's X, Y and Z values.
+    * @param {Vec3} vector3 A Vec3 object with the properties x, y and z both floats.
+    */
+    AddVector3(vector3){
+        this.X += vector3.x;
+        this.Y += vector3.y;
+        this.Z += vector3.z;
+    }
+    /**
+    * This function changes the Transform itself and returns no values. 
+    * It adds a Transform object's position values to the Transform's position values.
+    * @param {Transform} transform A Transform object.
+    */
+    AddTransform(transform){
+        this.X += transform.X;
+        this.Y += transform.Y;
+        this.Z += transform.Z;
+        this.W += transform.W;
+    }
+    /**
+     * This function changes the Transform itself and returns no values.
+     * Multiplies all of the Scale values of the Transform by a float.
+     * @param {float} scale
+     */
+    MultiplyByScale(scale){
+        this.scaleX *= scale;
+        this.scaleY *= scale;
+        this.scaleZ *= scale;
     }
 }
 class Mat2{

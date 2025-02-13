@@ -121,6 +121,15 @@ class Transform{
     }
 
 }
+class RigidBody2D{
+    Position;
+    Rotation;
+    LinearVelocity;
+    AngularVelocity;
+    Mass;
+    PhysicsLayer;
+    
+}
 class Mat2{
     constructor(xx, xy, yx ,yy){
         this.xx = xx;

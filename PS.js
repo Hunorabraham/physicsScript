@@ -16,11 +16,13 @@ class Physics{
      * @returns {boolean} true if there is a collision, false otherwise
      * @todo resolve  
      */
-    static checkCollision(Cleft, Cright, shouldResolve){
+    static checkCollision(Oleft, Oright, shouldResolve){
+        let Cleft = Oleft.collider;
+        let Cright = Oright.collider;
         let normal_vec = Vec2.Zero();
         outer: for(let i = 0; i < Cleft.triangles.length; i++){
             for(let j = 0; j < Cright.triangles.length; j++){
-                if(Physics.isOverlapping(Cleft.triangles[i], Cleft.position, Cright.triangles[j], Cright.position)){
+                if(Physics.isOverlapping(Cleft.triangles[i], Oleft.position, Cright.triangles[j], Oright.position)){
                     if(!shouldResolve){
                         return true; // return immediatelly
                     }
@@ -56,7 +58,7 @@ class Physics{
 
 /** 
 * @author Krys
-* @version 1.0.6
+* @version 1.0.7
 * @property {number} scaleX - the Transform's scale on the X axis.
 * @property {number} scaleY - the Transform's scale on the Y axis.
 * @property {number} scaleZ - the Transform's scale on the Z axis.
@@ -67,7 +69,7 @@ class Physics{
 */
 class Transform{
     /**
-     * @constructor Please don't use this. The static functions "FromValues", "FromVector2" and "FromVector3" are filling the role of this for you.
+     * @depracated Please don't use this. The static functions "FromValues", "FromVector2" and "FromVector3" are filling the role of this for you.
     */
     constructor(x,y,z,w){
         this.X = x;
@@ -77,6 +79,7 @@ class Transform{
     }
     /**
     * Creates a brand new Transform class object
+    * @constructor
     * @param {number} x position x 
     * @param {number} y position y 
     * @param {number} z position z 
@@ -92,7 +95,7 @@ class Transform{
     * @returns {Transform} new Transform
     */
     static FromVector2(vector2){
-        return new Transform(vector2.x,vector2.y,0,0);
+        return new Transform(vector2.X,vector2.Y,0,0);
     }
     /**
     * Creates a brand new Transform class object with the w value as 0 from a Vector2;
@@ -108,8 +111,8 @@ class Transform{
     * @param {Vec2} vector2 A Vec2 object with the properties x and y, both numbers.
     */
     AddVector2(vector2){
-        this.X += vector2.x;
-        this.Y += vector2.y;
+        this.X += vector2.X;
+        this.Y += vector2.Y;
     }
     /**
     * This function changes the Transform itself and returns no values.
@@ -237,8 +240,8 @@ class Mat2{
 }
 class Vec2{
     constructor(x,y){
-        this.x = x;
-        this.y = y;
+        this.X = x;
+        this.Y = y;
     }
     /**
      * 
@@ -251,33 +254,33 @@ class Vec2{
      * @param {Vec2} v Vec2 object 
      * @returns {Vec2} the new vec2
      */
-    add(v){return new Vec2(this.x + v.x, this.y + v.y);}
+    add(v){return new Vec2(this.X + v.X, this.Y + v.Y);}
     /**
      * Returns a new vec2 with the members subtracted from left
      * @param {Vec2} v Vec2 object 
      * @returns {Vec2} the new vec2
      */
-    sub(v){return new Vec2(this.x - v.x, this.y - v.y);}
+    sub(v){return new Vec2(this.X - v.X, this.Y - v.Y);}
     /**
      * Returns a new vec2, that is scaled by the given value
      * @param {number} c a scalar value
      * @returns {Vec2} the new vec2
      */
-    scale(c){return new Vec2(this.x*c, this.y*c);}
+    scale(c){return new Vec2(this.X*c, this.Y*c);}
     /**
      * Returns a new vec2 that has the transformation of M applied
      * @param {Mat2} M Mat2 object
      * @returns {Vec2} the new vec2
      */
-    mul(M){return new Vec2(this.x*M.xx + this.y*M.xy, this.y*M.yy + this.x*M.yx);}
+    mul(M){return new Vec2(this.X*M.xx + this.Y*M.xy, this.Y*M.yy + this.X*M.yx);}
     /**
      * modifies the original vec2 object, adds the members together
      * @param {Vec2} v Vec2 object
      * @returns {Vec2} self
      */
     addInto(v){
-        this.x += v.x;
-        this.y += v.y;
+        this.X += v.X;
+        this.Y += v.Y;
         return this;
     }
     /**
@@ -286,8 +289,8 @@ class Vec2{
      * @returns {Vec2} self
      */
     subInto(v){
-        this.x -= v.x;
-        this.y -= v.y;
+        this.X -= v.X;
+        this.Y -= v.Y;
         return this;
     }
     /**
@@ -296,8 +299,8 @@ class Vec2{
      * @returns {Vec2} self
      */
     scaleInto(c){
-        this.x *= c;
-        this.y *= c;
+        this.X *= c;
+        this.Y *= c;
         return this;
     }
     /**
@@ -306,8 +309,8 @@ class Vec2{
      * @returns {Vec2} self
      */
     mulInto(M){
-        this.x = this.x*M.xx + this.y*M.xy;
-        this.y = this.y*M.yy + this.x*M.yx;
+        this.X = this.X*M.xx + this.Y*M.xy;
+        this.Y = this.Y*M.yy + this.X*M.yx;
         return this;
     }
     /**
@@ -318,7 +321,7 @@ class Vec2{
     debugRender(context, colour){
         context.fillStyle = colour;
         context.beginPath();
-        context.arc(this.x, this.y, 2, 0, Math.PI*2, false);
+        context.arc(this.X, this.Y, 2, 0, Math.PI*2, false);
         context.fill();
         context.closePath();
     }
@@ -346,9 +349,9 @@ class Triangle{
         let BP = point.sub(this.points[1]);
         let CP = point.sub(this.points[2]);
         //sings
-        let s1 = Math.sign(AB.x*AP.y - AP.x*AB.y);
-        let s2 = Math.sign(BC.x*BP.y - BP.x*BC.y);
-        let s3 = Math.sign(CA.x*CP.y - CP.x*CA.y);
+        let s1 = Math.sign(AB.X*AP.Y - AP.X*AB.Y);
+        let s2 = Math.sign(BC.X*BP.Y - BP.X*BC.Y);
+        let s3 = Math.sign(CA.X*CP.Y - CP.X*CA.Y);
         //check
         return s1 == s2 && s2 == s3;
     }
@@ -367,9 +370,9 @@ class Triangle{
         let BP = point.sub(vertecies[1]);
         let CP = point.sub(vertecies[2]);
         //sings
-        let s1 = Math.sign(AB.x*AP.y - AP.x*AB.y);
-        let s2 = Math.sign(BC.x*BP.y - BP.x*BC.y);
-        let s3 = Math.sign(CA.x*CP.y - CP.x*CA.y);
+        let s1 = Math.sign(AB.X*AP.Y - AP.X*AB.Y);
+        let s2 = Math.sign(BC.X*BP.Y - BP.X*BC.Y);
+        let s3 = Math.sign(CA.X*CP.Y - CP.X*CA.Y);
         //check
         return s1 == s2 && s2 == s3;    
     }
@@ -382,10 +385,10 @@ class Triangle{
         context.strokeStyle = colour;
         context.fillStyle = colour;
         context.beginPath();
-        context.arc(this.center.x, this.center.y, 2, 0, Math.PI*2, false);
+        context.arc(this.center.X, this.center.Y, 2, 0, Math.PI*2, false);
         context.fill();
-        context.moveTo(this.points[2].x, this.points[2].y);
-        this.points.forEach(point=>context.lineTo(point.x, point.y));
+        context.moveTo(this.points[2].X, this.points[2].Y);
+        this.points.forEach(point=>context.lineTo(point.X, point.Y));
         context.closePath();
         context.stroke();
     }
@@ -396,11 +399,9 @@ class Collider2D{
      * @param {Triangle[]} triangles the triangles defining the shape of the collider
      * @param {Vec2} position the position of the collider
      */
-    constructor(triangles, position, rotation){
+    constructor(triangles){
         this.triangles = triangles;
-        this.position = position;
         this.center = triangles.reduce((sum,tri)=>sum.add(tri.center), Vec2.Zero()).scale(1/triangles.length);
-        this.rotation = rotation;
     }
     /**
      * renderes the oulines of all triangles to the given context, with the given colour
@@ -410,18 +411,36 @@ class Collider2D{
     debugRender(context, colour){
         context.strokeStyle = colour;
         context.beginPath();
-        context.translate(this.position.x, this.position.y);
         context.arc(0,0,2,0,Math.PI*2,false);
         context.fillStyle = colour;
         context.fill();
-        context.translate(-this.center.x, -this.center.y);
-        context.rotate(this.rotation);
         this.triangles.forEach(tri=>{
-            context.moveTo(tri.points[2].x, tri.points[2].y);
-            tri.points.forEach(point=>context.lineTo(point.x, point.y));
+            context.moveTo(tri.points[2].X, tri.points[2].Y);
+            tri.points.forEach(point=>context.lineTo(point.X, point.Y));
         });
         context.closePath();
         context.stroke();
+    }
+}
+class PhysicsObject2D{
+    /**
+     * 
+     * @param {RigidBody2D} rigidBody
+     * @param {Collider2D} collider 
+     */
+    constructor(rigidBody, collider){
+        this.RigidBody2D = rigidBody;
+        this.Collider = collider;
+    }
+    /**
+     * renderes the oulines of all triangles to the given context, with the given colour
+     * @param {CanvasRenderingContext2D} context the rendering context to use
+     * @param {String | CanvasGradient | CanvasPattern} colour the colour the outline should be
+     */
+    debugRender(context, colour){
+        context.translate(this.RigidBody2D.Position.X, this.RigidBody2D.Position.Y);
+        context.rotate(this.RigidBody2D.Rotation.Z);
+        this.Collider.debugRender(context, colour);
         context.resetTransform();
     }
 }

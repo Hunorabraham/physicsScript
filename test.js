@@ -12,17 +12,9 @@ for(let i = 0; i < sides; i++){
     tris.push(tri);
 }
 
-let c = new Collider2D(tris,new Vec2(200,200),0);
+
+let c = new Collider2D(tris);
 
 let t = new Triangle([Vec2.FromAngle(0).scale(50),Vec2.FromAngle(Math.PI*2/3).scale(50),Vec2.FromAngle(Math.PI*4/3).scale(50),]);
-let c2 = new Collider2D([t], Vec2.Zero(),0);
+let c2 = new Collider2D([t]);
 const rect = can.getBoundingClientRect();
-
-document.onmousemove = (e)=>{
-    c2.position.x = e.clientX - rect.left;
-    c2.position.y = e.clientY - rect.top;
-    col = Physics.checkCollision(c2,c)?"red":"blue";
-    ctx.clearRect(0,0,can.width,can.height);
-    c2.debugRender(ctx,col);
-    c.debugRender(ctx,col);
-}

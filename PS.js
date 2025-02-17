@@ -31,6 +31,8 @@ class Physics{
 }
 
 /** 
+* @author Krys
+* @version 1.0.6
 * @property {number} scaleX - the Transform's scale on the X axis.
 * @property {number} scaleY - the Transform's scale on the Y axis.
 * @property {number} scaleZ - the Transform's scale on the Z axis.
@@ -119,26 +121,56 @@ class Transform{
     /**
      * This function does not change the Transform itself and returns a new Transform. 
      * Intended to use with AddTransform() function to subtract values.
-     * Example: T1.AddTransform(Transform.Negate(T2));
+     * @see T1.AddTransform(Transform.Negate(T2));
      * @param {Transform} transform A Transform object.
      * @returns {Transform} a new Transform object that has the X, Y, Z and W values negated.
      */
     static Negate(transform){
         return new Transform(-transform.X, -transform.Y, -transform.Z, -transform.W);
     }
-
+    /**
+     * @returns {Transform} A null transform that bears all values as 0.
+     */
+    static NullTransform(){
+        return new Transform(0,0,0,0);
+    }
 }
 
 /** 
+* @author Krys
+* @version 1.0.0
 * @property {Transform} Position A Transform that describes the position of the RigidBody2D.
 * @property {Transform} Rotation A Transform that describes the rotation of the RigidBody2D.
-* @property {Transform | Vec2 | Vec3} LinearVelocity A Transform, Vec2 or Vec3 that describes the linear velocity of the RigidBody2D.
-* @property {Transform | Vec2 | Vec3} AngularVelocity A Transform, Vec2 or Vec3 that describes the angular velocity of the RigidBody2D.
+* @property {Vec2} LinearVelocity A Vec2 that describes the linear velocity of the RigidBody2D. By default this is a Vec2 with zero as both values.
+* @property {Vec2} AngularVelocity A Vec2 that describes the angular velocity of the RigidBody2D. By default this is a Vec2 with zero as both values.
 * @property {number} Mass A number that describes the mass of the object, and gravity affects it accordingly.
+* @property {number} Inertia The object's resistance to changes in angular velocity (rotation).
 * @property {number} PhysicsLayer A number that indicates the physics layer of the object on which it operates.
 */
 class RigidBody2D{
-
+    constructor(Position, Rotation, Mass, Inertia, PhysicsLayer){
+        this.Position = Position;
+        this.Rotation = Rotation;
+        this.Mass = Mass;
+        this.Inertia = Inertia;
+        this.PhysicsLayer = PhysicsLayer;
+        this.LinearVelocity = Vec2(0, 0);
+        this.AngularVelocity = Vec2(0, 0);
+    }
+    /**
+     * @param {Vec2} Force The force that you wish to apply.
+    */
+    ApplyLinearVelocity(Force){
+        this.LinearVelocity.X += Force.X;
+        this.LinearVelocity.Y += Force.Y;
+    }
+    /**
+     * @param {Vec2} Force The force that you wish to apply.
+    */
+    ApplyAngularVelocity(Force){
+        this.AngularVelocity.X += Force.X;
+        this.AngularVelocity.Y += Force.Y;
+    }
 }
 class Mat2{
     constructor(xx, xy, yx ,yy){

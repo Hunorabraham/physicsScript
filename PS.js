@@ -52,7 +52,7 @@ class Physics{
         let right_center = Tright.center.add(Gright);
         let left_overlaps = left_points.map(p=>Triangle.isAnonymOver(right_points,p));
         let right_overlaps = right_points.map(p=>Triangle.isAnonymOver(left_points,p));
-        
+
     }
 }
 
@@ -428,10 +428,14 @@ class PhysicsObject2D{
      * @param {RigidBody2D} rigidBody
      * @param {Collider2D} collider 
      */
-    constructor(rigidBody, collider){
+    constructor(rigidBody, collider, elasticity, hasGravity){
         this.RigidBody2D = rigidBody;
         this.Collider = collider;
+        this.HasGravity = hasGravity;
+        this.Elasticity = elasticity;
+        this.IsFixed = false;
     }
+    fixInPlace(){this.IsFixed = true;}
     /**
      * renderes the oulines of all triangles to the given context, with the given colour
      * @param {CanvasRenderingContext2D} context the rendering context to use
@@ -442,5 +446,13 @@ class PhysicsObject2D{
         context.rotate(this.RigidBody2D.Rotation.Z);
         this.Collider.debugRender(context, colour);
         context.resetTransform();
+    }
+    update(deltaTime){
+        if(this.IsFixed) return;
+        this.RigidBody2D.Position.AddVector2(this.RigidBody2D.LinearVelocity.scale(deltaTime));
+        this.Rotation.Z += this.AngularVelocity.X * deltaTime;
+        if(this.HasGravity){
+            this.LinearVelocity.AddVector2(new Vec2(0,10));
+        }
     }
 }

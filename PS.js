@@ -144,7 +144,7 @@ class Transform{
 
 /** 
 * @author Krys
-* @version 1.0.0
+* @version 1.0.1
 * @property {Transform} Position A Transform that describes the position of the RigidBody2D.
 * @property {Transform} Rotation A Transform that describes the rotation of the RigidBody2D.
 * @property {Vec2} LinearVelocity A Vec2 that describes the linear velocity of the RigidBody2D. By default this is a Vec2 with zero as both values.
@@ -160,8 +160,8 @@ class RigidBody2D{
         this.Mass = Mass;
         this.Inertia = Inertia;
         this.PhysicsLayer = PhysicsLayer;
-        this.LinearVelocity = Vec2(0, 0);
-        this.AngularVelocity = Vec2(0, 0);
+        this.LinearVelocity = Vec2.Zero();
+        this.AngularVelocity = Vec2.Zero();
     }
     /**
      * @param {Vec2} Force The force that you wish to apply.

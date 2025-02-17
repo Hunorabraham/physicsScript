@@ -4,29 +4,47 @@ class Physics{
     }
     /**
      * checks if two collider2d collide, conditionally resolves the collision
-     * @param {Collider2d} Cleft 
-     * @param {Collider2d} Cright 
+     * @param {Collider2D} Cleft 
+     * @param {Collider2D} Cright 
      * @param {boolean} shouldResolve if this is true it resolves the collision, otherwise it just returns
      * @returns {boolean} true if there is a collision, false otherwise
+     * @todo resolve  
      */
     static checkCollision(Cleft, Cright, shouldResolve){
-        collision = false;
+        let normal_vec = Vec2.Zero();
         outer: for(let i = 0; i < Cleft.triangles.length; i++){
-            for(let j = 0; j < Cright.triangles; j++){
-                if(Physics.isOverlapping(Cleft.triangles[i], Cright.triangles[j])){
-                    collision = true;
-                    break outer;
+            for(let j = 0; j < Cright.triangles.length; j++){
+                if(Physics.isOverlapping(Cleft.triangles[i], Cleft.position, Cright.triangles[j], Cright.position)){
+                    if(!shouldResolve){
+                        return true; // return immediatelly
+                    }
+                    overlaps.push(Cleft.triangles[i]);
+                    overlaps.push(Cright.triangles[j]);
                 }
             }
         }
         if(!collision) return false; //return early when no collision
         //collided!
         if(!shouldResolve) return true; //abort resolution
-        //resolve
         return true;
     }
-    static isOverlapping(Tleft, Tright){
-        return Tright.points.any(point=>Tleft.isOver(point)) || Tleft.points.any(point=>Tright.isOver(point));
+    /**
+     * 
+     * @param {Triangle} Tleft 
+     * @param {Triangle} Tright 
+     * @returns {boolean} true if there is a collision, false otherwise
+     */
+    static isOverlapping(Tleft, Gleft, Tright, Gright){
+        return Tright.points.some(point=>Tleft.isOver(point.add(Gright).sub(Gleft))) || Tleft.points.some(point=>Tright.isOver(point.add(Gleft).sub(Gright)));
+    }
+    static getNormalVector(Tleft, Gleft, Tright, Gright){
+        let left_points = Tleft.points.map(p=>p.add(Gleft));
+        let right_points = Tright.points.map(p=>p.add(Gright));
+        let left_center = Tleft.center.add(Gleft);
+        let right_center = Tright.center.add(Gright);
+        let left_overlaps = left_points.map(p=>Triangle.isAnonymOver(right_points,p));
+        let right_overlaps = right_points.map(p=>Triangle.isAnonymOver(left_points,p));
+        
     }
 }
 
@@ -201,6 +219,12 @@ class Vec2{
         this.y = y;
     }
     /**
+     * 
+     * @returns {Vec2} the zero vector
+     */
+    static Zero(){return new Vec2(0,0);}
+    static FromAngle(angle){return new Vec2(Math.cos(angle), Math.sin(angle));}
+    /**
      * Returns a new vec2 with the members added together
      * @param {Vec2} v Vec2 object 
      * @returns {Vec2} the new vec2
@@ -264,6 +288,18 @@ class Vec2{
         this.y = this.y*M.yy + this.x*M.yx;
         return this;
     }
+    /**
+     * renderes the oulines of all triangles to the given context, with the given colour
+     * @param {CanvasRenderingContext2D} context the rendering context to use
+     * @param {String | CanvasGradient | CanvasPattern} colour the colour the outline should be
+     */
+    debugRender(context, colour){
+        context.fillStyle = colour;
+        context.beginPath();
+        context.arc(this.x, this.y, 2, 0, Math.PI*2, false);
+        context.fill();
+        context.closePath();
+    }
 }
 class Triangle{
     /**
@@ -272,6 +308,7 @@ class Triangle{
      */
     constructor(points){
         this.points = points;
+        this.center = points[0].add(points[1]).add(points[2]).scale(1/3);
     }
     /**
      * returns true if the triangle is over the given point, otherwise false
@@ -279,16 +316,69 @@ class Triangle{
      * @returns {boolean}
      */
     isOver(point){
-        console.error("not implemented");
+        //vectors
+        let AB = this.points[1].sub(this.points[0]);
+        let BC = this.points[2].sub(this.points[1]);
+        let CA = this.points[0].sub(this.points[2]);
+        let AP = point.sub(this.points[0]);
+        let BP = point.sub(this.points[1]);
+        let CP = point.sub(this.points[2]);
+        //sings
+        let s1 = Math.sign(AB.x*AP.y - AP.x*AB.y);
+        let s2 = Math.sign(BC.x*BP.y - BP.x*BC.y);
+        let s3 = Math.sign(CA.x*CP.y - CP.x*CA.y);
+        //check
+        return s1 == s2 && s2 == s3;
+    }
+    /**
+     * returns true if the triangle given by the points in the array is over the given point, otherwise false
+     * @param {Vec2[]} vertecies an array of points that should be treated as a triangle
+     * @param {Vec2} point to be tested against the triangle
+     * @returns {boolean}
+     */
+    isAnonymOver(vertecies, point){
+        //vectors
+        let AB = vertecies[1].sub(vertecies[0]);
+        let BC = vertecies[2].sub(vertecies[1]);
+        let CA = vertecies[0].sub(vertecies[2]);
+        let AP = point.sub(vertecies[0]);
+        let BP = point.sub(vertecies[1]);
+        let CP = point.sub(vertecies[2]);
+        //sings
+        let s1 = Math.sign(AB.x*AP.y - AP.x*AB.y);
+        let s2 = Math.sign(BC.x*BP.y - BP.x*BC.y);
+        let s3 = Math.sign(CA.x*CP.y - CP.x*CA.y);
+        //check
+        return s1 == s2 && s2 == s3;    
+    }
+    /**
+     * renderes the oulines of all triangles to the given context, with the given colour
+     * @param {CanvasRenderingContext2D} context the rendering context to use
+     * @param {String | CanvasGradient | CanvasPattern} colour the colour the outline should be
+     */
+    debugRender(context, colour){
+        context.strokeStyle = colour;
+        context.fillStyle = colour;
+        context.beginPath();
+        context.arc(this.center.x, this.center.y, 2, 0, Math.PI*2, false);
+        context.fill();
+        context.moveTo(this.points[2].x, this.points[2].y);
+        this.points.forEach(point=>context.lineTo(point.x, point.y));
+        context.closePath();
+        context.stroke();
     }
 }
-class Collider2d{
+class Collider2D{
     /**
      * Creates a new collideer
      * @param {Triangle[]} triangles the triangles defining the shape of the collider
+     * @param {Vec2} position the position of the collider
      */
-    constructor(triangles){
+    constructor(triangles, position, rotation){
         this.triangles = triangles;
+        this.position = position;
+        this.center = triangles.reduce((sum,tri)=>sum.add(tri.center), Vec2.Zero()).scale(1/triangles.length);
+        this.rotation = rotation;
     }
     /**
      * renderes the oulines of all triangles to the given context, with the given colour
@@ -298,11 +388,18 @@ class Collider2d{
     debugRender(context, colour){
         context.strokeStyle = colour;
         context.beginPath();
+        context.translate(this.position.x, this.position.y);
+        context.arc(0,0,2,0,Math.PI*2,false);
+        context.fillStyle = colour;
+        context.fill();
+        context.translate(-this.center.x, -this.center.y);
+        context.rotate(this.rotation);
         this.triangles.forEach(tri=>{
-            context.MoveTo(tri.points[2].x, tri.points[2].y);
-            tri.points.forEach(point=>context.LineTo(point.x, point.y));
+            context.moveTo(tri.points[2].x, tri.points[2].y);
+            tri.points.forEach(point=>context.lineTo(point.x, point.y));
         });
         context.closePath();
         context.stroke();
+        context.resetTransform();
     }
 }

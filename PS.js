@@ -17,6 +17,7 @@ class Physics{
      * @todo resolve  
      */
     static checkCollision(Oleft, Oright, shouldResolve){
+        if(Oleft.RigidBody2D.PhysicsLayer != Oright.RigidBody2D.PhysicsLayer) return false; //return immediately if they are not on the same layer
         let Cleft = Oleft.collider;
         let Cright = Oright.collider;
         let normal_vec = Vec2.Zero();
@@ -24,7 +25,7 @@ class Physics{
             for(let j = 0; j < Cright.triangles.length; j++){
                 if(Physics.isOverlapping(Cleft.triangles[i], Oleft.position, Cright.triangles[j], Oright.position)){
                     if(!shouldResolve){
-                        return true; // return immediatelly
+                        return true; // return immediatelly if no resolution needed
                     }
                     overlaps.push(Cleft.triangles[i]);
                     overlaps.push(Cright.triangles[j]);
@@ -46,12 +47,27 @@ class Physics{
         return Tright.points.some(point=>Tleft.isOver(point.add(Gright).sub(Gleft))) || Tleft.points.some(point=>Tright.isOver(point.add(Gleft).sub(Gright)));
     }
     static getNormalVector(Tleft, Gleft, Tright, Gright){
+        //convert everything to global space
         let left_points = Tleft.points.map(p=>p.add(Gleft));
         let right_points = Tright.points.map(p=>p.add(Gright));
         let left_center = Tleft.center.add(Gleft);
         let right_center = Tright.center.add(Gright);
+        //get overlapping vertecies
         let left_overlaps = left_points.map(p=>Triangle.isAnonymOver(right_points,p));
         let right_overlaps = right_points.map(p=>Triangle.isAnonymOver(left_points,p));
+        //get normals for those vertecies
+        let normals = [];
+        left_overlaps.forEach(p=>{
+            //get direction from center
+            let dir = p.sub(right_center);
+            //get vectors pointing from center to vertecies
+            //get Handedness for CA to CB
+            //get Handedness for dir and A,B,C
+            //check handednesses(all four) to determine which side it is closest to <- hold on, that'd be enough???
+            //get normal from colsest side, pointing away from center
+            //add normal to collection
+            normals.push();
+        });
 
     }
 }
@@ -249,6 +265,14 @@ class Vec2{
      */
     static Zero(){return new Vec2(0,0);}
     static FromAngle(angle){return new Vec2(Math.cos(angle), Math.sin(angle));}
+    /**
+     * returns the sign of the third componenet of the cross pcoduct (V x W), zero if V = W or V = -W
+     * this will be positive if W is a positive rotation from V, eg: (1;0) is a negative rotation, -PI/2, from (0;1);
+     * @param {Vec2} V 
+     * @param {Vec2} W 
+     * @returns 
+     */
+    static Handedness(V,W){return Math.sign(V.X*W.Y - W.X*V.Y);}
     /**
      * Returns a new vec2 with the members added together
      * @param {Vec2} v Vec2 object 

@@ -1,3 +1,9 @@
+/**
+ * @version 0.0.1
+ * @method hello logs the current version of PhysicsScript onto the console.
+ * @method checkCollision
+ * @method isOverlapping
+ */
 class Physics{
     static hello(){
         console.log("This is PS.js ver 0.0.1");
@@ -159,14 +165,14 @@ class RigidBody2D{
     }
     /**
      * @param {Vec2} Force The force that you wish to apply.
-    */
+     */
     ApplyLinearVelocity(Force){
         this.LinearVelocity.X += Force.X;
         this.LinearVelocity.Y += Force.Y;
     }
     /**
      * @param {Vec2} Force The force that you wish to apply.
-    */
+     */
     ApplyAngularVelocity(Force){
         this.AngularVelocity.X += Force.X;
         this.AngularVelocity.Y += Force.Y;

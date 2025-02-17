@@ -4,37 +4,18 @@ class Physics{
     }
 }
 
+/** 
+* @property {number} scaleX - the Transform's scale on the X axis.
+* @property {number} scaleY - the Transform's scale on the Y axis.
+* @property {number} scaleZ - the Transform's scale on the Z axis.
+* @property {number} X - the Transform's position on the X axis.
+* @property {number} Y - the Transform's position on the Y axis.
+* @property {number} Z - the Transform's position on the Z axis.
+* @property {number} W the Transform's rotation in some form optionally.
+*/
 class Transform{
-    /** 
-     * @param {float} scaleX the Transform's scale on the X axis.
-    */
-    scaleX;
-    /** 
-     * @param {float} scaleY the Transform's scale on the Y axis.
-    */
-    scaleY;
-    /** 
-     * @param {float} scaleZ the Transform's scale on the Z axis.
-    */
-    scaleZ;
-    /** 
-     * @param {float} X the Transform's position on the X axis.
-    */
-    X;
-    /** 
-     * @param {float} Y the Transform's position on the Y axis.
-    */
-    Y;
-    /** 
-     * @param {float} Z the Transform's position on the Z axis.
-    */
-    Z;
-    /** 
-     * @param {float} W the Transform's rotation in some form optionally.
-    */
-    W;
     /**
-     * Please don't use this. The static functions "FromValues", "FromVector2" and "FromVector3" are filling the role of this for you.
+     * @constructor Please don't use this. The static functions "FromValues", "FromVector2" and "FromVector3" are filling the role of this for you.
     */
     constructor(x,y,z,w){
         this.X = x;
@@ -44,10 +25,10 @@ class Transform{
     }
     /**
     * Creates a brand new Transform class object
-    * @param {float} x position x 
-    * @param {float} y position y 
-    * @param {float} z position z 
-    * @param {float} w rotation w
+    * @param {number} x position x 
+    * @param {number} y position y 
+    * @param {number} z position z 
+    * @param {number} w rotation w
     * @returns {Transform} new Transform
     */
     static FromValues(x,y,z,w){
@@ -55,7 +36,7 @@ class Transform{
     }    
     /**
     * Creates a brand new Transform class object with the z and w values as 0 from a Vector2;
-    * @param {Vec2} vector2 A Vec2 object with the properties x and y, both floats;
+    * @param {Vec2} vector2 A Vec2 object with the properties x and y, both numbers;
     * @returns {Transform} new Transform
     */
     static FromVector2(vector2){
@@ -63,7 +44,7 @@ class Transform{
     }
     /**
     * Creates a brand new Transform class object with the w value as 0 from a Vector2;
-    * @param {Vec3} vector3 A Vec3 object with the properties x, y and z, all floats;
+    * @param {Vec3} vector3 A Vec3 object with the properties x, y and z, all numbers;
     * @returns {Transform} new Transform
     */
     static FromVector3(vector3){
@@ -72,7 +53,7 @@ class Transform{
     /**
     * This function changes the Transform itself and returns no values.
     * It adds a Vec2 to the Transform's X and Y values.
-    * @param {Vec2} vector2 A Vec2 object with the properties x and y, both floats.
+    * @param {Vec2} vector2 A Vec2 object with the properties x and y, both numbers.
     */
     AddVector2(vector2){
         this.X += vector2.x;
@@ -81,7 +62,7 @@ class Transform{
     /**
     * This function changes the Transform itself and returns no values.
     * It adds a Vec3 to the Transform's X, Y and Z values.
-    * @param {Vec3} vector3 A Vec3 object with the properties x, y and z both floats.
+    * @param {Vec3} vector3 A Vec3 object with the properties x, y and z both numbers.
     */
     AddVector3(vector3){
         this.X += vector3.x;
@@ -101,8 +82,8 @@ class Transform{
     }
     /**
      * This function changes the Transform itself and returns no values.
-     * Multiplies all of the Scale values of the Transform by a float.
-     * @param {float} scale
+     * Multiplies all of the Scale values of the Transform by a number.
+     * @param {number} scale
      */
     MultiplyByScale(scale){
         this.scaleX *= scale;
@@ -121,14 +102,17 @@ class Transform{
     }
 
 }
+
+/** 
+* @property {Transform} Position A Transform that describes the position of the RigidBody2D.
+* @property {Transform} Rotation A Transform that describes the rotation of the RigidBody2D.
+* @property {Transform | Vec2 | Vec3} LinearVelocity A Transform, Vec2 or Vec3 that describes the linear velocity of the RigidBody2D.
+* @property {Transform | Vec2 | Vec3} AngularVelocity A Transform, Vec2 or Vec3 that describes the angular velocity of the RigidBody2D.
+* @property {number} Mass A number that describes the mass of the object, and gravity affects it accordingly.
+* @property {number} PhysicsLayer A number that indicates the physics layer of the object on which it operates.
+*/
 class RigidBody2D{
-    Position;
-    Rotation;
-    LinearVelocity;
-    AngularVelocity;
-    Mass;
-    PhysicsLayer;
-    
+
 }
 class Mat2{
     constructor(xx, xy, yx ,yy){
@@ -139,7 +123,7 @@ class Mat2{
     }
     /**
      * returns a new Mat2 object, that applies a rotation around the origin by the given angle
-     * @param {float} angle the angle in radians
+     * @param {number} angle the angle in radians
      * @returns {Mat2} the new Mat2
      */
     static rotation(angle){
@@ -188,7 +172,7 @@ class Vec2{
     sub(v){return new Vec2(this.x - v.x, this.y - v.y);}
     /**
      * Returns a new vec2, that is scaled by the given value
-     * @param {float} c a scalar value
+     * @param {number} c a scalar value
      * @returns {Vec2} the new vec2
      */
     scale(c){return new Vec2(this.x*c, this.y*c);}
@@ -220,7 +204,7 @@ class Vec2{
     }
     /**
      * modifies the original vec2 object, scales members by the given value
-     * @param {float} c a scalar value
+     * @param {number} c a scalar value
      * @returns {Vec2} self
      */
     scaleInto(c){
